@@ -1,6 +1,6 @@
 import express ,{Request,Response ,NextFunction} from "express" ;
 const register = (req:Request, res:Response,next:NextFunction) =>{
-    res.send("RegisterBoy")
+    const {username , email,password} = req.body ;
 }
 const login = (req:Request, res:Response,next:NextFunction) =>{
     res.send('LoginBoy')
