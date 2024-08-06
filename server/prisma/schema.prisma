@@ -14,5 +14,6 @@ model User {
   username String @unique
   password String 
   avatar String?
+  refreshToken String?
   createdAt DateTime @default(now())
 }

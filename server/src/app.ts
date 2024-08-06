@@ -1,12 +1,13 @@
 import express,{Request ,Response ,NextFunction} from 'express' ;
 import cors from 'cors'
+import cookieParser from 'cookie-parser';
 
 import { PostRoutes,AuthRoutes } from './routes';
 
-
 const app = express() ;
-app.use(cors()) ;
 
+app.use(cors()) ;
+app.use(cookieParser())
 app.use(express.json()) ;
 app.use(express.urlencoded({extended:true})) ;
 
