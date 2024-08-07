@@ -2,6 +2,7 @@ import express ,{Request,Response ,NextFunction} from "express" ;
 import bcrypt from 'bcrypt' ;
 import prisma from "../../lib/prisma";
 import jwt from 'jsonwebtoken' ;
+import { jwtSecretKey } from "../config";
 
 
 const register = async(req:Request, res:Response,next:NextFunction) =>{
@@ -37,6 +38,16 @@ const login = async(req:Request, res:Response,next:NextFunction) =>{
         
         if(!user)  return res.status(401).json({message :"User not found"}) ;
         
+        const age :number = 1000*60*60*24*7 ;
+
+        const token = jwt.sign(
+            {
+                id:user.id
+            },
+            jwtSecretKey,{
+                expiresIn: age
+            }
+        )
 
         const isPasswordValid = await bcrypt.compare(password,user.password) ;
         if(!isPasswordValid){
@@ -49,7 +60,7 @@ const login = async(req:Request, res:Response,next:NextFunction) =>{
 
         return res
         .status(200)
-        .cookie("test", "myvalue" ,options)
+        .cookie("token", token ,options)
         .json({
             "message" :"Login Successfull"
         })
@@ -58,8 +69,8 @@ const login = async(req:Request, res:Response,next:NextFunction) =>{
         
     }
 }
-const logout = (req:Request, res:Response,next:NextFunction) =>{
-    res.send('LogoutBoy')
+const logout = async(req:Request, res:Response,next:NextFunction) =>{
+   res.clearCookie("token").status(200).json({message:"LogoutSuccessful"})
 }
 
 export {
