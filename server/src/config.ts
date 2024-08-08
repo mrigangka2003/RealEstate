@@ -6,7 +6,10 @@ const PORT:number = Number(process.env.PORT) ;
 
 const jwtSecretKey:string = String(process.env.JWT_SECRET_KEY)
 
+const clientUrl:string = String(process.env.CLIENT_URL) ;
+
 export {
     PORT,
-    jwtSecretKey
+    jwtSecretKey,
+    clientUrl
 }

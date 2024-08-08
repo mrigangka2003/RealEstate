@@ -10,6 +10,19 @@ const register = async(req:Request, res:Response,next:NextFunction) =>{
    try {
         const {username , email,password} = req.body ;
     
+        const existingUser = await prisma.user.findFirst({
+            where:{
+                OR:[
+                    {email:email},
+                    {username:username}
+                ]
+            }
+        })
+
+        if(existingUser){
+            return res.status(400).json({ message: 'Username or Email already exists' });
+        }
+
         const hashedPass = await bcrypt.hash(password,10) ;
     
         const newUser = await prisma.user.create({
@@ -19,6 +32,8 @@ const register = async(req:Request, res:Response,next:NextFunction) =>{
                 password:hashedPass 
             }
         })
+
+        
 
         res.status(201).json({message:"User data successfully created"})
 

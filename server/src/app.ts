@@ -3,10 +3,13 @@ import cors from 'cors'
 import cookieParser from 'cookie-parser';
 
 import { PostRoutes,AuthRoutes } from './routes';
+import { clientUrl } from './config';
 
 const app = express() ;
 
-app.use(cors()) ;
+app.use(cors({
+    origin:clientUrl
+})) ;
 app.use(cookieParser())
 app.use(express.json()) ;
 app.use(express.urlencoded({extended:true})) ;
