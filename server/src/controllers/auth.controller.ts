@@ -44,44 +44,41 @@ const register = async(req:Request, res:Response,next:NextFunction) =>{
 
 }
 const login = async(req:Request, res:Response,next:NextFunction) =>{
-    try {
-        const {username , password} = req.body ;
+    const {username , password} = req.body ;
 
+    try {
         const user = await prisma.user.findUnique({
-            where : {username }
-        })
-        
-        if(!user)  return res.status(401).json({message :"User not found"}) ;
-        
-        const age :number = 1000*60*60*24*7 ;
+            where: { username },
+        });
+
+        if (!user) {
+            return res.status(401).json({ message: "INVALID CREDENTIALS" });
+        }
+
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+
+        if (!isPasswordValid) {
+            return res.status(401).json({ message: "INVALID credentials" });
+        }
+
+        const age = 1000 * 60 * 60 * 24 * 7; // 1 week
 
         const token = jwt.sign(
-            {
-                id:user.id
-            },
-            jwtSecretKey,{
-                expiresIn: age
-            }
-        )
+            { id: user.id },
+            jwtSecretKey,
+            { expiresIn: age }
+        );
 
-        const isPasswordValid = await bcrypt.compare(password,user.password) ;
-        if(!isPasswordValid){
-            return res.status(401).json({message :"Wrong Password"}) ;
-        }
+        const {password:userPassword, ...userInfo} = user
 
-        const options = {
-            httpOnly:true
-        }
-
-        return res
-        .status(200)
-        .cookie("token", token ,options)
-        .json({
-            "message" :"Login Successfull"
-        })
+        res
+            .cookie("token", token, { httpOnly: true })
+            .status(200)
+            .json({ message: "Login Successful" });
 
     } catch (error) {
-        
+        console.error('Error during login:', error);
+        res.status(500).json({ message: "Failed to login" });
     }
 }
 const logout = async(req:Request, res:Response,next:NextFunction) =>{

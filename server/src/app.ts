@@ -8,7 +8,8 @@ import { clientUrl } from './config';
 const app = express() ;
 
 app.use(cors({
-    origin:clientUrl
+    origin:clientUrl,
+    credentials:true
 })) ;
 app.use(cookieParser())
 app.use(express.json()) ;
