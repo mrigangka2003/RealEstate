@@ -64,7 +64,9 @@ const login = async(req:Request, res:Response,next:NextFunction) =>{
         const age = 1000 * 60 * 60 * 24 * 7; // 1 week
 
         const token = jwt.sign(
-            { id: user.id },
+            { 
+                id: user.id,
+            },
             jwtSecretKey,
             { expiresIn: age }
         );
@@ -74,7 +76,7 @@ const login = async(req:Request, res:Response,next:NextFunction) =>{
         res
             .cookie("token", token, { httpOnly: true })
             .status(200)
-            .json({ message: "Login Successful" });
+            .json(userInfo);
 
     } catch (error) {
         console.error('Error during login:', error);
