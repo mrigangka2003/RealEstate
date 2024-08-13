@@ -8,7 +8,7 @@ export const verifyToken = async (req: Request, res: Response, next: NextFunctio
         if (!token) return res.status(401).json({ message: "Not Authenticated" });
 
         const payload: any = jwt.verify(token, jwtSecretKey); 
-        req.userId = payload.id; 
+        (req as any).userId = payload.id; 
         next(); 
 
     } catch (err) {

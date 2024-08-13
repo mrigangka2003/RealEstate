@@ -3,7 +3,6 @@ import jwt from "jsonwebtoken";
 import { jwtSecretKey } from "../config";
 
 export const shouldBeLoggedIn = async (req: Request, res: Response) => {
-    console.log(req.userId)
     const token = req.cookies.token;
     if (!token) return res.status(401).json({ message: "Not Authenticated" });
 
