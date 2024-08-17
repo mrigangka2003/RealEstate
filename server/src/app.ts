@@ -2,9 +2,10 @@ import express,{Request ,Response ,NextFunction} from 'express' ;
 import cors from 'cors'
 import cookieParser from 'cookie-parser';
 
-import { PostRoutes,AuthRoutes,TestRoutes } from './routes';
+import { PostRoutes,AuthRoutes,TestRoutes,UserRoutes } from './routes';
 import { clientUrl } from './config';
 import { verifyToken } from './middleware/verifyToken';
+
 
 const app = express() ;
 
@@ -17,6 +18,7 @@ app.use(express.json()) ;
 app.use(express.urlencoded({extended:true})) ;
 
 
+app.use('/api/users',UserRoutes) ;
 app.use('/api/post',PostRoutes) ;
 app.use('/api/auth',AuthRoutes) ;
 app.use('/api/test',verifyToken,TestRoutes) ;
