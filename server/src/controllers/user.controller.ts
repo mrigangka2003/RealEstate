@@ -36,7 +36,7 @@ const getUser = async(req:Request ,res:Response)=>{
 const updateUser = async(req:Request ,res:Response)=>{
     const {id} = req.params ;
     const tokenUserId = (req as any).userId ;
-    const {password, ...inputs} = req.body ;
+    const {password,avatar,username,email} = req.body ;
 
     if(id !== tokenUserId){
         return res.status(403).json({message:"Invalid Request"})
@@ -47,18 +47,35 @@ const updateUser = async(req:Request ,res:Response)=>{
         if(password && typeof password === 'string'){
             updatedPassword = await bcrypt.hash(password,10)
         }
+        
+        if(username || email){
+            const existingUser = await prisma.user.findFirst({
+                where:{
+                    OR:[
+                        {username:username},
+                        {email:email}
+                    ]
+                }
+            })
 
+            if(existingUser && existingUser.id!==id){
+                return res.status(409).json({
+                    message:"The username or email already exists"
+                })
+            }
+        }
 
         const updatedUser = await prisma.user.update({
             where:{id},
             data: {
-                ...inputs,
-                ...(updatedPassword && {password:updatedPassword}) 
+                ...(username && {username}),
+                ...(email && {email}),
+                ...(updatedPassword && {password:updatedPassword}) ,
+                ...(avatar && {avatar})
             }
         })
         
         //update data
-        
         res.status(200).json(updatedUser);
 
     } catch (error) {
@@ -67,7 +84,30 @@ const updateUser = async(req:Request ,res:Response)=>{
     }
 }
 const deleteUser = async(req:Request ,res:Response)=>{
+    const {id} = req.params ;
 
+    const tokenUserId = (req as any).userId ;
+
+    if(id!==tokenUserId){
+        return res.status(403).json({
+            message:"Not Authorized"
+        })
+    }
+
+    try {
+        await prisma.user.delete({
+            where:{id}
+        })
+
+        res
+        .status(200)
+        .json({message :"User deleted Successfully"}) ;
+    } catch (error) {
+        console.log(error) ;
+        res
+        .status(500)
+        .json({message :"Failed to delete user!"})
+    }
 }
 
 export {

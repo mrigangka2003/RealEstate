@@ -1,15 +1,33 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import "./profileUpdatePage.scss";
 import { AuthContext } from "../../contexts/AuthContext";
-
+import apiRequest from "../../lib/apiRequest"
 function ProfileUpdatePage() {
 
+  const [error,setError] = useState("") ;
+
   const {currentUser,updateUser} = useContext(AuthContext) ;
+
+  const handleSubmit =async(e)=>{
+    e.preventDefault() ;
+
+    const formdata = new FormData(e.target) ;
+    const {username , email,password} = Object.fromEntries(formdata) ;
+
+    try {
+      // const res = await apiRequest
+    } catch (error) {
+      console.log(error) ;
+      setError(err.response.data.message) ;
+    }
+  }
+
+
 
   return (
     <div className="profileUpdatePage">
       <div className="formContainer">
-        <form>
+        <form onSubmit={handleSubmit}>
           <h1>Update Profile</h1>
           <div className="item">
             <label htmlFor="username">Username</label>
