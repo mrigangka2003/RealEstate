@@ -74,7 +74,6 @@ const updateUser = async(req:Request ,res:Response)=>{
                 ...(avatar && {avatar})
             }
         })
-        
         //update data
         res.status(200).json(updatedUser);
 

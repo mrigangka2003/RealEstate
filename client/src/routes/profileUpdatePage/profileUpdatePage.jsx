@@ -2,10 +2,11 @@ import { useContext, useState } from "react";
 import "./profileUpdatePage.scss";
 import { AuthContext } from "../../contexts/AuthContext";
 import apiRequest from "../../lib/apiRequest"
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 function ProfileUpdatePage() {
-
   const [error,setError] = useState("") ;
-
   const {currentUser,updateUser} = useContext(AuthContext) ;
 
   const handleSubmit =async(e)=>{
@@ -13,16 +14,19 @@ function ProfileUpdatePage() {
 
     const formdata = new FormData(e.target) ;
     const {username , email,password} = Object.fromEntries(formdata) ;
-
     try {
-      // const res = await apiRequest
+      const res = await apiRequest.put(`/users/${currentUser.id}`,{
+        username,
+        email,
+        password
+      })
+      updateUser(res.data) ;
+      toast.success("User Data has been updated!");
     } catch (error) {
-      console.log(error) ;
-      setError(err.response.data.message) ;
+      setError(error.response?.data?.message || "An error occurred");
+      toast.error(error.response?.data?.message || "An error occurred"); 
     }
   }
-
-
 
   return (
     <div className="profileUpdatePage">
@@ -52,6 +56,7 @@ function ProfileUpdatePage() {
             <input id="password" name="password" type="password" />
           </div>
           <button>Update</button>
+          <ToastContainer/>
         </form>
       </div>
       <div className="sideContainer">

@@ -27,7 +27,7 @@ function Navbar() {
               src={currentUser.avatar || "./NoAvatar.jpg"}
               alt=""
             />
-            <span>John Doe</span>
+            <span>{currentUser.username}</span>
             <Link to="/profile" className="profile">
               <div className="notification">3</div>
               <span>Profile</span>
