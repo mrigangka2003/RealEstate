@@ -1,5 +1,5 @@
 import { register,login,logout } from "./auth.controller";
-import { getUsers,getUser,updateUser,deleteUser } from "./user.controller";
+import { getUsers,getUser,updateUser,deleteUser,updateAvatar } from "./user.controller";
 export {
     register,
     login, 
@@ -8,5 +8,6 @@ export {
     getUsers,
     getUser,
     updateUser,
-    deleteUser
+    deleteUser,
+    updateAvatar
 }

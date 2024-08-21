@@ -12,7 +12,6 @@ const getUsers = async(req:Request,res:Response)=>{
         res.status(500).json({message:"FAILED TO GET ALL THE USERS"}) ;
     }
 }
-
 const getUser = async(req:Request ,res:Response)=>{
     const {id} = req.params;
     try {
@@ -109,9 +108,14 @@ const deleteUser = async(req:Request ,res:Response)=>{
     }
 }
 
+const updateAvatar = async(req:Request ,res:Response)=>{
+
+}
+
 export {
     getUsers,
     getUser,
     updateUser,
-    deleteUser
+    deleteUser,
+    updateAvatar
 }

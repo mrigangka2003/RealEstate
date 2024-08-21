@@ -13,3 +13,10 @@ cloudinary.config({
     api_key:cloudinary_api_key,
     api_secret:cloudinary_api_secret
 })
+const uploadOnCloudinary = async(localFilePath:string){
+
+}
+
+export {
+    uploadOnCloudinary;
+}
