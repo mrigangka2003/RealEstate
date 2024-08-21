@@ -68,16 +68,10 @@ function ProfileUpdatePage() {
                     alt=""
                     className="avatar"
                 />
-                <UploadWidget
-                    uwConfig={{
-                        cloudName: "mrigangkacloud",
-                        uploadPreset: "estate",
-                        multiple: false,
-                        maxImageFileSize: 2000000,
-                        folder: "avatars",
-                    }}
-                    setAvatar={setAvatar}
-                />
+                <form action="">
+                    <input type="file" />
+                    <button>Update</button>
+                </form>
             </div>
         </div>
     );
