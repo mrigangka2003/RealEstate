@@ -1,6 +1,7 @@
 import express ,{Request,Response ,NextFunction} from "express" ;
 import prisma from "../../lib/prisma";
 import bcrypt from "bcrypt"
+import { uploadOnCloudinary } from "../helpers/cloudinary";
 const getUsers = async(req:Request,res:Response)=>{
     try {
         const users = await prisma.user.findMany();
@@ -109,7 +110,36 @@ const deleteUser = async(req:Request ,res:Response)=>{
 }
 
 const updateAvatar = async(req:Request ,res:Response)=>{
+    const userId = req.params.id ;
 
+    try {
+        const avatarLocalPath:any = req.file?.path ;
+
+        if(!avatarLocalPath){
+            return res.status(400).json({ message: "No file uploaded" });
+        }
+
+
+        const avatar:any = await uploadOnCloudinary(avatarLocalPath) ;
+
+        if(!avatar.url){
+            return res.status(406).json({
+                message:"Error while uploading avatar" 
+            })
+        }
+
+        const updatedUser = await prisma.user.update({
+            where:{id:userId},
+            data:{
+                avatar:avatar.url
+            }
+        })
+
+        return res.status(200).json(updatedUser) ;
+    } catch (error) {
+        const errorMessage = (error as Error).message;
+        res.status(500).json({ message: errorMessage });
+    }
 }
 
 export {

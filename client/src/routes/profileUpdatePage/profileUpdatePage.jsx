@@ -4,7 +4,6 @@ import { AuthContext } from "../../contexts/AuthContext";
 import apiRequest from "../../lib/apiRequest";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import UploadWidget from "../../components/uploadWidget/UploadWidget";
 
 function ProfileUpdatePage() {
     const { currentUser, updateUser } = useContext(AuthContext);
@@ -30,6 +29,14 @@ function ProfileUpdatePage() {
             toast.error(error.response?.data?.message || "An error occurred");
         }
     };
+
+
+    const updateAvatar=async(e)=>{
+        e.preventDefault() ;
+
+        const formdata = new FormData(e.target) ;
+        
+    }
 
     return (
         <div className="profileUpdatePage">
@@ -68,8 +75,8 @@ function ProfileUpdatePage() {
                     alt=""
                     className="avatar"
                 />
-                <form action="">
-                    <input type="file" />
+                <form action="" enctype="multipart/form-data" onSubmit={updateAvatar}>
+                    <input type="file" name="avatar"/>
                     <button>Update</button>
                 </form>
             </div>
