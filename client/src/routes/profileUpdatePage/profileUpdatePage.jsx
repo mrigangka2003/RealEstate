@@ -23,20 +23,36 @@ function ProfileUpdatePage() {
                 password,
             });
             updateUser(res.data);
+            setAvatar(res.avatar) ;
             toast.success("User Data has been updated!");
         } catch (error) {
             setError(error.response?.data?.message || "An error occurred");
-            toast.error(error.response?.data?.message || "An error occurred");
+            toast.error(error.response?.data?.message || "Something went wrong while updating details");
         }
     };
 
+    const updateAvatar = async (e) => {
+        e.preventDefault();
 
-    const updateAvatar=async(e)=>{
-        e.preventDefault() ;
+        const formdata = new FormData(e.target);
+        try {
+            const response = await apiRequest.put(
+                `/users/upload/${currentUser.id}`,
+                formdata,
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data", 
+                    },
+                }
+            );
 
-        const formdata = new FormData(e.target) ;
-        
-    }
+            updateUser(response.data) ;
+            setAvatar(response.data.avatar);
+            toast.success("Image upload successful") 
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Something went wrong while updating avatar");
+        }
+    };
 
     return (
         <div className="profileUpdatePage">
@@ -75,8 +91,12 @@ function ProfileUpdatePage() {
                     alt=""
                     className="avatar"
                 />
-                <form action="" enctype="multipart/form-data" onSubmit={updateAvatar}>
-                    <input type="file" name="avatar"/>
+                <form
+                    action="put"
+                    enctype="multipart/form-data"
+                    onSubmit={updateAvatar}
+                >
+                    <input type="file" name="avatar" />
                     <button>Update</button>
                 </form>
             </div>

@@ -135,6 +135,9 @@ const updateAvatar = async(req:Request ,res:Response)=>{
             }
         })
 
+        const { password, ...userdetails} = updatedUser;
+
+
         return res.status(200).json(updatedUser) ;
     } catch (error) {
         const errorMessage = (error as Error).message;
