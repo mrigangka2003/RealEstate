@@ -2,6 +2,8 @@ import express ,{Request,Response ,NextFunction} from "express" ;
 import prisma from "../../lib/prisma";
 import bcrypt from "bcrypt"
 import { uploadOnCloudinary } from "../helpers/cloudinary";
+
+
 const getUsers = async(req:Request,res:Response)=>{
     try {
         const users = await prisma.user.findMany();
