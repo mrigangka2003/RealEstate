@@ -7,7 +7,7 @@ import { jwtSecretKey } from "../config";
 
 const register = async(req:Request, res:Response,next:NextFunction) =>{
 
-   try {
+    try {
         const {username , email,password} = req.body ;
     
         const existingUser = await prisma.user.findFirst({
@@ -37,12 +37,14 @@ const register = async(req:Request, res:Response,next:NextFunction) =>{
 
         res.status(201).json({message:"User data successfully created"})
 
-   }catch (error) {
+    }catch (error) {
         res.send('failed to create USER') 
         console.log(error) ;
-   }
+    }
 
 }
+
+
 const login = async(req:Request, res:Response,next:NextFunction) =>{
     const {username , password} = req.body ;
 
