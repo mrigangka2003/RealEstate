@@ -20,7 +20,16 @@ const getPost=async(req:Request,res:Response)=>{
     try {
         
         const post = await prisma.post.findUnique({
-            where:{id} 
+            where:{id},
+            include:{
+                postDetails :true ,
+                user:{
+                    select:{
+                        username:true ,
+                        avatar:true
+                    }
+                }
+            }
         })
 
         if(!post){
@@ -37,33 +46,26 @@ const getPost=async(req:Request,res:Response)=>{
 }
 
 const createPost = async(req:Request,res:Response)=>{
-    const {title , price , image , address , city ,bedroom , bathroom, type , property , latitude , longitude } = req.body ;
+    const body = req.body ;
     const tokenUserId = (req as any).userId ;
     try {
         const newPost = await prisma.post.create({
             data:{
-                title,
-                price ,
-                image ,
-                address ,
-                city ,
-                bedroom ,
-                bathroom ,
-                type ,
-                property ,
-                latitude,
-                longitude ,
-                userId : tokenUserId
+                ...body.postData,
+                userId : tokenUserId,
+                postDetails:{
+                    create:body.postDetails,
+                }
             }
         })
 
         if(!newPost){
-            return res.status(500).json({message:"Something went wrong while creating new post"})
+            throw new Error() ;
         }
 
         return res.status(200).json(newPost) ;
     } catch (error) {
-        console.error() ;
+        console.log((error as any).message)
         return res.status(403).json({message:"Something went wrong while creating post"} )
     }
 }
@@ -97,7 +99,7 @@ const deletePost =async(req:Request,res:Response)=>{
             where:{id}
         })
 
-        return res.status(401).json({message:"post deleted"}) ;
+        return res.status(200).json({message:"post deleted"}) ;
     } catch (error) {
         console.log(error) ;
         return res.status(501).json({message:"something went wrong"})
