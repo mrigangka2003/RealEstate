@@ -6,6 +6,7 @@ import Register from "./register/register";
 import ProfilePage from "./profilePage/profilePage";
 import ProfileUpdatePage from "./profileUpdatePage/profileUpdatePage";
 import SinglePage from "./singlePage/singlePage";
+import NewPostPage from "./newPostPage/newPostPage"
 
 
 export {
@@ -17,5 +18,6 @@ export {
     Register,
     ProfilePage,
     ProfileUpdatePage,
-    SinglePage
+    SinglePage,
+    NewPostPage
 }

@@ -12,8 +12,9 @@ import {
   ProfilePage,
   Login,
   Register,
-  ProfileUpdatePage
- } from "./routes";
+  ProfileUpdatePage,
+  NewPostPage
+  } from "./routes";
 
 
 function App() {
@@ -55,6 +56,9 @@ function App() {
         {
           path:"/profile/update",
           element:<ProfileUpdatePage/>
+        },{
+          path:"/add" ,
+          element:<NewPostPage/>
         }
       ]
     }
