@@ -2,15 +2,54 @@ import { useState } from "react";
 import "./newPostPage.scss";
 import ReactQuill from "react-quill"
 import 'react-quill/dist/quill.snow.css';
+import apiRequest from "../../lib/apiRequest"
+import {useNavigate} from "react-router-dom" ;
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function NewPostPage() {
   const [value, setValue] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async(e)=>{
     e.preventDefault() ;
+    const [images,setImages] = useState([]) ;
     
     const formdata = new FormData(e.target);
+    
     const inputs = Object.fromEntries(formdata) ;
+    try {
+      const res = await apiRequest.post("/posts" ,{
+        postData :{
+          title: inputs.title,
+          price: parseInt(inputs.price),
+          address: inputs.address,
+          city: inputs.city,
+          bedroom: parseInt(inputs.bedroom),
+          bathroom: parseInt(inputs.bathroom),
+          type: inputs.type,
+          property: inputs.property,
+          latitude: inputs.latitude,
+          longitude: inputs.longitude,
+        },
+        postDetails :{
+          desc: value,
+          utilities: inputs.utilities,
+          pet: inputs.pet,
+          income: inputs.income,
+          size: parseInt(inputs.size),
+          school: parseInt(inputs.school),
+          bus: parseInt(inputs.bus),
+          restaurant: parseInt(inputs.restaurant),
+        }
+      });
+      toast.success("Post has been uploaded");
+      navigate("/" + res.data.id) ;
+    } catch (error) {
+      console.log("error: ", error)
+      toast.error("Something went wrong while uploading") ;
+    }
+
   }
 
   return (
@@ -25,7 +64,7 @@ function NewPostPage() {
             </div>
             <div className="item">
               <label htmlFor="price">Price</label>
-              <input id="price" name="price" type="number" />
+              <input id="price" min={10} name="price" type="number" />
             </div>
             <div className="item">
               <label htmlFor="address">Address</label>
@@ -99,7 +138,7 @@ function NewPostPage() {
             </div>
             <div className="item">
               <label htmlFor="size">Total Size (sqft)</label>
-              <input min={0} id="size" name="size" type="number" />
+              <input min={0} id="size" name="size" type="number"/>
             </div>
             <div className="item">
               <label htmlFor="school">School</label>
@@ -117,7 +156,9 @@ function NewPostPage() {
           </form>
         </div>
       </div>
-      <div className="sideContainer"></div>
+      <div className="sideContainer">
+        
+      </div>
     </div>
   );
 }
