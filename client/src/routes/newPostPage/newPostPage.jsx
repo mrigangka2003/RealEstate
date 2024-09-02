@@ -1,56 +1,77 @@
 import { useState } from "react";
 import "./newPostPage.scss";
-import ReactQuill from "react-quill"
-import 'react-quill/dist/quill.snow.css';
-import apiRequest from "../../lib/apiRequest"
-import {useNavigate} from "react-router-dom" ;
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import apiRequest from "../../lib/apiRequest";
+import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function NewPostPage() {
-  const [value, setValue] = useState('');
+  const [images, setImages] = useState([]);
+  const [imagePreviews, setImagePreviews] = useState([]);
+  const [value, setValue] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = async(e)=>{
-    e.preventDefault() ;
-    const [images,setImages] = useState([]) ;
-    
-    const formdata = new FormData(e.target);
-    
-    const inputs = Object.fromEntries(formdata) ;
-    try {
-      const res = await apiRequest.post("/posts" ,{
-        postData :{
-          title: inputs.title,
-          price: parseInt(inputs.price),
-          address: inputs.address,
-          city: inputs.city,
-          bedroom: parseInt(inputs.bedroom),
-          bathroom: parseInt(inputs.bathroom),
-          type: inputs.type,
-          property: inputs.property,
-          latitude: inputs.latitude,
-          longitude: inputs.longitude,
-        },
-        postDetails :{
-          desc: value,
-          utilities: inputs.utilities,
-          pet: inputs.pet,
-          income: inputs.income,
-          size: parseInt(inputs.size),
-          school: parseInt(inputs.school),
-          bus: parseInt(inputs.bus),
-          restaurant: parseInt(inputs.restaurant),
-        }
-      });
-      toast.success("Post has been uploaded");
-      navigate("/" + res.data.id) ;
-    } catch (error) {
-      console.log("error: ", error)
-      toast.error("Something went wrong while uploading") ;
-    }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  }
+    const formData = new FormData(e.target);
+
+    // Append images to FormData
+    images.forEach((image) => {
+      formData.append("postData[images]", image); // Field name for files
+    });
+
+    formData.append("postData[title]", formData.get("title"));
+    formData.append("postData[price]", parseInt(formData.get("price")));
+    formData.append("postData[address]", formData.get("address"));
+    formData.append("postData[city]", formData.get("city"));
+    formData.append("postData[bedroom]", parseInt(formData.get("bedroom")));
+    formData.append("postData[bathroom]", parseInt(formData.get("bathroom")));
+    formData.append("postData[type]", formData.get("type"));
+    formData.append("postData[property]", formData.get("property"));
+    formData.append("postData[latitude]", formData.get("latitude"));
+    formData.append("postData[longitude]", formData.get("longitude"));
+
+    formData.append("postDetail[desc]", value);
+    formData.append("postDetail[utilities]", formData.get("utilities"));
+    formData.append("postDetail[pet]", formData.get("pet"));
+    formData.append("postDetail[income]", formData.get("income"));
+    formData.append("postDetail[size]", parseInt(formData.get("size")));
+    formData.append("postDetail[school]", parseInt(formData.get("school")));
+    formData.append("postDetail[bus]", parseInt(formData.get("bus")));
+    formData.append(
+      "postDetail[restaurant]",
+      parseInt(formData.get("restaurant"))
+    );
+
+    try {
+      const res = await apiRequest.post("/posts", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data", // Important for file uploads
+        },
+      });
+      navigate("/" + res.data.id);
+    } catch (err) {
+      console.log(err);
+      toast.error("something went wrong")
+    }
+  };
+
+  const handleImageFile = (e) => {
+    const selectedFiles = Array.from(e.target.files);
+    if (selectedFiles.length < 3 || selectedFiles.length > 5) {
+      setError("You must upload between 3 and 5 images.");
+      return;
+    }
+    setImages(selectedFiles);
+    setError("");
+
+    const previews = selectedFiles.map((file) => URL.createObjectURL(file));
+    setImagePreviews(previews);
+  };
 
   return (
     <div className="newPostPage">
@@ -138,7 +159,7 @@ function NewPostPage() {
             </div>
             <div className="item">
               <label htmlFor="size">Total Size (sqft)</label>
-              <input min={0} id="size" name="size" type="number"/>
+              <input min={0} id="size" name="size" type="number" />
             </div>
             <div className="item">
               <label htmlFor="school">School</label>
@@ -152,13 +173,47 @@ function NewPostPage() {
               <label htmlFor="restaurant">Restaurant</label>
               <input min={0} id="restaurant" name="restaurant" type="number" />
             </div>
-            <button className="sendButton">Add</button>
+            <button
+              className="sendButton"
+              disabled={images.length < 3 || images.length > 5}
+            >
+              Add
+            </button>
           </form>
         </div>
       </div>
       <div className="sideContainer">
-        
+        <div className="fileContainer">
+          <label htmlFor="images" className="customFileInput">
+            upload Images
+            <input
+              type="file"
+              id="images"
+              name="images"
+              multiple
+              onChange={handleImageFile}
+              accept="image/*"
+              className="fileInputHidden"
+            />
+          </label>
+          {error && <p className="error">{error}</p>}
+        </div>
+        <div className="imagePreviews">
+          {imagePreviews.map((preview, index) => (
+            <img
+              key={index}
+              src={preview}
+              alt={`preview ${index + 1}`}
+              style={{
+                width: "150px",
+                height: "150px",
+                margin: "5px",
+              }}
+            />
+          ))}
+        </div>
       </div>
+      <ToastContainer />
     </div>
   );
 }

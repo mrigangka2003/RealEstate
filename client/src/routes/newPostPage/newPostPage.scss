@@ -21,9 +21,6 @@
           flex-direction: column;
           gap: 5px;
 
-          label {
-          }
-
           input {
             padding: 20px;
             border-radius: 5px;
@@ -53,6 +50,12 @@
           font-weight: bold;
           cursor: pointer;
         }
+        
+        .sendButton:disabled{
+          background-color: #6c757d;
+          cursor: not-allowed;
+        }
+
       }
     }
   }
@@ -66,6 +69,31 @@
     align-items: center;
     justify-content: center;
 
+    .fileContainer{
+      display: flex;
+      flex-direction: column;
+
+      .customFileInput {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #000000;
+        color: white;
+        font-size: 1rem;
+        border-radius: 5px;
+        cursor: pointer;
+        text-align: center;
+        transition: background-color 0.3s ease;
+      }
+      
+      .customFileInput:hover {
+        background-color: #353535;
+      }
+      
+      .fileInputHidden {
+        display: none;
+      }
+    }
+
     img {
       width: 50%;
       height: 180px;
@@ -74,3 +102,4 @@
     }
   }
 }
+

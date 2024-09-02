@@ -1,5 +1,6 @@
 import {Request ,Response } from "express" ;
 import prisma from "../../lib/prisma";
+import { uploadOnCloudinary } from "../helpers/cloudinary";
 
 const getPosts = async(req:Request,res:Response)=>{
     try {
@@ -46,18 +47,31 @@ const getPost=async(req:Request,res:Response)=>{
 }
 
 const createPost = async(req:Request,res:Response)=>{
-    const body = req.body ;
+    const {postData , postDetails} = req.body ;
     const tokenUserId = (req as any).userId ;
+    const files = (req as any).files['postData[images'] ;
+
+    const imageUrls = [] ;
     try {
-        const newPost = await prisma.post.create({
-            data:{
-                ...body.postData,
-                userId : tokenUserId,
-                postDetails:{
-                    create:body.postDetails,
+        if (files && Array.isArray(files)) {
+            for (const file of files) {
+                const uploadResult = await uploadOnCloudinary(file.path);
+                if (uploadResult && uploadResult.url) {
+                    imageUrls.push(uploadResult.url);
                 }
             }
-        })
+        }
+
+        const newPost = await prisma.post.create({
+            data: {
+                ...postData,
+                images: imageUrls,
+                userId:tokenUserId,
+                postDetails: {
+                    create: postDetails,
+                }
+            }
+        });
 
         if(!newPost){
             throw new Error() ;
