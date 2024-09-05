@@ -53,39 +53,45 @@ const createPost = async (req: Request, res: Response) => {
 
     const imageUrls: string[] = [];
     try {
+
         if (files && Array.isArray(files)) {
-            for (const file of files) {
+        for (const file of files) {
             const uploadResult = await uploadOnCloudinary(file.path);
-                if (uploadResult && uploadResult.url) {
-                    imageUrls.push(uploadResult.url);
-                }
-            }  
+            if (uploadResult && uploadResult.url) {
+                imageUrls.push(uploadResult.url);
+            }
+            }
         }
-      // Ensure the price is an integer
         const price = parseInt(postData.price, 10);
+        const bedroom = parseInt(postData.bedroom, 10);  // Convert bedroom to integer
+        const bathroom = parseInt(postData.bathroom, 10);  // Convert bathroom to integer
 
         const newPost = await prisma.post.create({
-            data: {
-            ...postData,
-            price, // Use the parsed integer value for price
-            images: imageUrls,
+        data: {
+            title: postData.title,
+            price,
+            address: postData.address,
+            city: postData.city,
+            bedroom, 
+            bathroom, 
+            type: postData.type,
+            property: postData.property,
+            latitude: postData.latitude,
+            longitude: postData.longitude,
+            image: imageUrls,
             userId: tokenUserId,
-            postDetails: {
-                create: postDetails,
-            },
-            },
-        });
-
-        if (!newPost) {
-            throw new Error("Failed to create post");
-        }
-
-        return res.status(200).json(newPost);
+          postDetails: postDetails ? { create: postDetails } : undefined, // Ensure postDetails is correctly passed
+        },
+    });
+    if (!newPost) {
+        throw new Error("Failed to create post");
+    }
+    return res.status(200).json(newPost);
     } catch (error) {
         console.log((error as any).message);
         return res.status(403).json({ message: "Something went wrong while creating post" });
     }
-}; 
+};
 
 const updatePost =async(req:Request,res:Response)=>{
     const {id} = req.params ;
