@@ -15,6 +15,7 @@ import {
   ProfileUpdatePage,
   NewPostPage
   } from "./routes";
+import { singlePageLoader } from "./lib/loaders";
 
 
 function App() {
@@ -33,7 +34,8 @@ function App() {
         },
         {
           path:"/:id",
-          element:<SinglePage/>
+          element:<SinglePage/>,
+          loader:singlePageLoader
         },
         {
           path:"/login",
