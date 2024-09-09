@@ -35,15 +35,15 @@ function NewPostPage() {
     formData.append("postData[latitude]", formData.get("latitude"));
     formData.append("postData[longitude]", formData.get("longitude"));
 
-    formData.append("postDetail[desc]", value);
-    formData.append("postDetail[utilities]", formData.get("utilities"));
-    formData.append("postDetail[pet]", formData.get("pet"));
-    formData.append("postDetail[income]", formData.get("income"));
-    formData.append("postDetail[size]", parseInt(formData.get("size")));
-    formData.append("postDetail[school]", parseInt(formData.get("school")));
-    formData.append("postDetail[bus]", parseInt(formData.get("bus")));
+    formData.append("postDetails[desc]", value);
+    formData.append("postDetails[utilities]", formData.get("utilities"));
+    formData.append("postDetails[pet]", formData.get("pet"));
+    formData.append("postDetails[income]", formData.get("income"));
+    formData.append("postDetails[size]", parseInt(formData.get("size")));
+    formData.append("postDetails[school]", parseInt(formData.get("school")));
+    formData.append("postDetails[bus]", parseInt(formData.get("bus")));
     formData.append(
-      "postDetail[restaurant]",
+      "postDetails[restaurant]",
       parseInt(formData.get("restaurant"))
     );
 
