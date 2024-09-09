@@ -63,8 +63,15 @@ const createPost = async (req: Request, res: Response) => {
             }
         }
         const price = parseInt(postData.price, 10);
-        const bedroom = parseInt(postData.bedroom, 10);  // Convert bedroom to integer
-        const bathroom = parseInt(postData.bathroom, 10);  // Convert bathroom to integer
+        const bedroom = parseInt(postData.bedroom, 10);  
+        const bathroom = parseInt(postData.bathroom, 10); 
+        
+        
+        
+        // const size = Number(postDetails.size) ;
+        // const school = Number(postDetails.school) ;
+        // const bus = Number(postDetails.bus) ;
+        // const restaurants = Number(postDetails.restaurants) ;
 
         const newPost = await prisma.post.create({
         data: {
@@ -80,7 +87,10 @@ const createPost = async (req: Request, res: Response) => {
             longitude: postData.longitude,
             image: imageUrls,
             userId: tokenUserId,
-          postDetails: postDetails ? { create: postDetails } : undefined, // Ensure postDetails is correctly passed
+            postDetails: 
+            { 
+                create:postDetails
+            }
         },
     });
     if (!newPost) {
