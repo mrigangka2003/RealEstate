@@ -18,10 +18,12 @@ const getPosts = async(req:Request,res:Response)=>{
 
 const getPost=async(req:Request,res:Response)=>{
     const {id}= req.params ;
+    console.log(id) ;
     try {
-        
         const post = await prisma.post.findUnique({
-            where:{id},
+            where:{
+                id
+            },
             include:{
                 postDetails :true ,
                 user:{
@@ -49,7 +51,7 @@ const getPost=async(req:Request,res:Response)=>{
 const createPost = async (req: Request, res: Response) => {
     const { postData, postDetails } = req.body;
     const tokenUserId = (req as any).userId;
-    const files = (req as any).files['postData[images]'];
+    const files = req?.files ? (req as any).files['postData[images]'] : undefined;
 
     const imageUrls: string[] = [];
     try {
@@ -67,11 +69,6 @@ const createPost = async (req: Request, res: Response) => {
         const bathroom = parseInt(postData.bathroom, 10); 
         
         
-        
-        // const size = Number(postDetails.size) ;
-        // const school = Number(postDetails.school) ;
-        // const bus = Number(postDetails.bus) ;
-        // const restaurants = Number(postDetails.restaurants) ;
 
         const newPost = await prisma.post.create({
         data: {
@@ -89,13 +86,20 @@ const createPost = async (req: Request, res: Response) => {
             userId: tokenUserId,
             postDetails: 
             { 
-                create:postDetails
+                create:{
+                    size : parseInt(postDetails.size) ,
+                    bus : parseInt(postDetails.bus) ,
+                    restaurants : parseInt(postDetails.restaurants),
+                    school : parseInt(postDetails.school),
+                    ...postDetails 
+                }
             }
         },
     });
     if (!newPost) {
         throw new Error("Failed to create post");
     }
+    console.log(newPost) ;
     return res.status(200).json(newPost);
     } catch (error) {
         console.log((error as any).message);
