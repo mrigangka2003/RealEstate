@@ -43,8 +43,8 @@ function NewPostPage() {
     formData.append("postDetails[school]", parseInt(formData.get("school")));
     formData.append("postDetails[bus]", parseInt(formData.get("bus")));
     formData.append(
-      "postDetails[restaurant]",
-      parseInt(formData.get("restaurant"))
+      "postDetails[restaurants]",
+      parseInt(formData.get("restaurants"))
     );
 
     try {
@@ -171,7 +171,7 @@ function NewPostPage() {
             </div>
             <div className="item">
               <label htmlFor="restaurant">Restaurant</label>
-              <input min={0} id="restaurant" name="restaurant" type="number" required/>
+              <input min={0} id="restaurant" name="restaurants" type="number" required/>
             </div>
             <button
               className="sendButton"

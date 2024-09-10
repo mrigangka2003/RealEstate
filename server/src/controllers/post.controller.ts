@@ -1,6 +1,7 @@
 import {Request ,Response } from "express" ;
 import prisma from "../../lib/prisma";
 import { uploadOnCloudinary } from "../helpers/cloudinary";
+import { parse } from "dotenv";
 
 const getPosts = async(req:Request,res:Response)=>{
     try {
@@ -50,6 +51,7 @@ const getPost=async(req:Request,res:Response)=>{
 
 const createPost = async (req: Request, res: Response) => {
     const { postData, postDetails } = req.body;
+    console.log(typeof(parseInt(postDetails.size))) ;
     const tokenUserId = (req as any).userId;
     const files = req?.files ? (req as any).files['postData[images]'] : undefined;
 
@@ -87,11 +89,8 @@ const createPost = async (req: Request, res: Response) => {
             postDetails: 
             { 
                 create:{
-                    size : parseInt(postDetails.size) ,
-                    bus : parseInt(postDetails.bus) ,
-                    restaurants : parseInt(postDetails.restaurants),
-                    school : parseInt(postDetails.school),
-                    ...postDetails 
+                    size : "2",
+                    ...postDetails
                 }
             }
         },
