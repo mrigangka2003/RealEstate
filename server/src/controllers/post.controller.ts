@@ -71,7 +71,10 @@ const createPost = async (req: Request, res: Response) => {
         const bathroom = parseInt(postData.bathroom, 10); 
         
         
-
+        postDetails.size = Number(postDetails.size)
+        postDetails.bus = Number(postDetails.bus)
+        postDetails.school = Number(postDetails.school)
+        postDetails.restaurants = Number(postDetails.resturants)
         const newPost = await prisma.post.create({
         data: {
             title: postData.title,
@@ -89,7 +92,6 @@ const createPost = async (req: Request, res: Response) => {
             postDetails: 
             { 
                 create:{
-                    size : "2",
                     ...postDetails
                 }
             }
