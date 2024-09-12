@@ -8,8 +8,6 @@ import DOMPurify from "dompurify"
 function SinglePage() {
 
   const post = useLoaderData() ;
-  console.log(post)
-
   return (
     <div className="singlePage">
       <div className="details">
