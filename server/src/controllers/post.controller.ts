@@ -3,9 +3,21 @@ import prisma from "../../lib/prisma";
 import { uploadOnCloudinary } from "../helpers/cloudinary";
 import { parse } from "dotenv";
 
+interface PostQueryParams {
+    city?:string ,
+    type?: string;
+    property?: string;
+    bedroom?: string;
+    minPrice?: string;
+    maxPrice?: string;
+}
+
 const getPosts = async(req:Request,res:Response)=>{
+    const query:PostQueryParams = req.query as PostQueryParams ;
     try {
-        const posts = await prisma.post.findMany() ;
+        const posts = await prisma.post.findMany(
+
+        ) ;
         if(!posts){
             return res.status(500).json({message:"Can't fetch all the data"}) ;
         }
