@@ -15,7 +15,7 @@ import {
   ProfileUpdatePage,
   NewPostPage
   } from "./routes";
-import { listPageLoader, singlePageLoader } from "./lib/loaders";
+import { singlePageLoader } from "./lib/loaders";
 
 
 function App() {
@@ -30,11 +30,10 @@ function App() {
         },
         {
           path:"/list",
-          element:<ListPage/>,
-          loader: listPageLoader
+          element:<ListPage/>
         },
         {
-          path:"/posts/:id",
+          path:"/:id",
           element:<SinglePage/>,
           loader:singlePageLoader
         },

@@ -16,8 +16,8 @@ function Navbar() {
           <span>LamaEstate</span>
         </Link>
 
-        <NavLink to={'/'}>Home</NavLink>
-        <NavLink to={'about'}>About</NavLink>
+        <NavLink to={'/home'}>Home</NavLink>
+        <NavLink to={'/about'}>About</NavLink>
         <NavLink to={'/contact'}>Contact</NavLink>
         <NavLink to={'/agents'}>Agents</NavLink>
       </div>
