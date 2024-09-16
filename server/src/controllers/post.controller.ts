@@ -1,11 +1,41 @@
 import {Request ,Response } from "express" ;
 import prisma from "../../lib/prisma";
 import { uploadOnCloudinary } from "../helpers/cloudinary";
-import { parse } from "dotenv";
+import { Prisma, Property ,Type } from "@prisma/client";
 
-const getPosts = async(req:Request,res:Response)=>{
+interface paramsQueryInterface {
+    city ?:string ,
+    type ?:string ,
+    property?: string;
+    bedroom?: number;
+    minPrice?: number;
+    maxPrice?: number;
+}
+
+const getPosts = async(req:Request,res:Response)=>{   
     try {
-        const posts = await prisma.post.findMany() ;
+        const query : paramsQueryInterface  = {
+            ...req.query ,
+            bedroom: parseInt(req.query.bedroom as string || '0', 10),
+            minPrice: parseInt(req.query.minPrice as string || '0', 10),
+            maxPrice: parseInt(req.query.maxPrice as string || 'Infinity', 10),
+        }
+
+        const type = query.type as Type |undefined ;
+        const property = query.property as Property | undefined ;
+
+        const posts = await prisma.post.findMany({
+            where:{
+                city: query.city ,
+                type :  type ,
+                property : property,
+                bedroom: query.bedroom !== 0 ? query.bedroom : undefined,
+                price: {
+                    gte: query.minPrice !== 0 ? query.minPrice : undefined,
+                    lte: query.maxPrice !== Infinity ? query.maxPrice : undefined,
+                },
+            }
+        }) ;
         if(!posts){
             return res.status(500).json({message:"Can't fetch all the data"}) ;
         }
@@ -51,7 +81,6 @@ const getPost=async(req:Request,res:Response)=>{
 
 const createPost = async (req: Request, res: Response) => {
     const { postData, postDetails } = req.body;
-    console.log(typeof(parseInt(postDetails.size))) ;
     const tokenUserId = (req as any).userId;
     const files = req?.files ? (req as any).files['postData[images]'] : undefined;
 
