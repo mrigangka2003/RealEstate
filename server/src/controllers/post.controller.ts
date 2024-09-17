@@ -23,7 +23,6 @@ const getPosts = async(req:Request,res:Response)=>{
             minPrice: req.query.minPrice ? parseInt(req.query.minPrice as string, 10) : undefined,
             maxPrice: req.query.maxPrice ? parseInt(req.query.maxPrice as string, 10) : undefined,
         };
-        console.log('Parsed query:', query);
 
         const where: Prisma.PostWhereInput = {
             ...(query.city !== 'undefined' ? { city: query.city } : {}),
