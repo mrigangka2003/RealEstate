@@ -1,7 +1,8 @@
 import {Request ,Response } from "express" ;
 import prisma from "../../lib/prisma";
 import { uploadOnCloudinary } from "../helpers/cloudinary";
-import { Prisma, Property ,Type } from "@prisma/client";
+import { Prisma, PrismaClient, Property ,Type } from "@prisma/client";
+
 
 interface paramsQueryInterface {
     city ?:string ,
@@ -14,33 +15,34 @@ interface paramsQueryInterface {
 
 const getPosts = async(req:Request,res:Response)=>{   
     try {
-        const query : paramsQueryInterface  = {
-            ...req.query ,
-            bedroom: parseInt(req.query.bedroom as string || '0', 10),
-            minPrice: parseInt(req.query.minPrice as string || '0', 10),
-            maxPrice: parseInt(req.query.maxPrice as string || 'Infinity', 10),
-        }
+        const query: paramsQueryInterface = {
+            city: req.query.city as string | undefined,
+            type: req.query.type as string | undefined,
+            property: req.query.property as string | undefined,
+            bedroom: req.query.bedroom ? parseInt(req.query.bedroom as string, 10) : undefined,
+            minPrice: req.query.minPrice ? parseInt(req.query.minPrice as string, 10) : undefined,
+            maxPrice: req.query.maxPrice ? parseInt(req.query.maxPrice as string, 10) : undefined,
+        };
+        console.log('Parsed query:', query);
 
-        const type = query.type as Type |undefined ;
-        const property = query.property as Property | undefined ;
-
-        const posts = await prisma.post.findMany({
-            where:{
-                city: query.city !==undefined  ? query.city : undefined,
-                type :  type ,
-                property : property,
-                bedroom: query.bedroom !== 0 ? query.bedroom : undefined,
-                price: {
-                    gte: query.minPrice !== 0 ? query.minPrice : undefined,
-                    lte: query.maxPrice !== Infinity ? query.maxPrice : undefined,
-                },
+        const where: Prisma.PostWhereInput = {
+            ...(query.city !== 'undefined' ? { city: query.city } : {}),
+            ...(query.type && Object.values(Type).includes(query.type as Type) ? { type: query.type as Type } : {}),
+            ...(query.property && Object.values(Property).includes(query.property as Property) ? { property: query.property as Property } : {}),
+            ...(query.bedroom && query.bedroom > 0 ? { bedroom: query.bedroom } : {}),
+            ...(query.minPrice || query.maxPrice ? {
+            price: {
+                ...(query.minPrice && query.minPrice > 0 ? { gte: query.minPrice } : {}),
+                ...(query.maxPrice && query.maxPrice > 0 ? { lte: query.maxPrice } : {}),
             }
-        }) ;
+            } : {}),
+        };
+        const posts = await prisma.post.findMany({ where });
         if(!posts){
             return res.status(500).json({message:"Can't fetch all the data"}) ;
         }
-
-        return res.status(200).json(posts) ;
+        
+        return res.status(200).json(posts);
     } catch (error) {
         console.log(error) ;
         res.status(500).json({message:"Failed to get all the posts"}) ;
