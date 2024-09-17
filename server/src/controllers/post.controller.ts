@@ -26,7 +26,7 @@ const getPosts = async(req:Request,res:Response)=>{
 
         const posts = await prisma.post.findMany({
             where:{
-                city: query.city ,
+                city: query.city !==undefined  ? query.city : undefined,
                 type :  type ,
                 property : property,
                 bedroom: query.bedroom !== 0 ? query.bedroom : undefined,
