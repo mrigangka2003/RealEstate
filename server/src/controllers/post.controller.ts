@@ -24,8 +24,9 @@ const getPosts = async(req:Request,res:Response)=>{
             maxPrice: req.query.maxPrice ? parseInt(req.query.maxPrice as string, 10) : undefined,
         };
 
+        console.log("Query" ,query) ;
         const where: Prisma.PostWhereInput = {
-            ...(query.city !== 'undefined' ? { city: query.city } : {}),
+            ...(query.city !== 'undefined' || '' ? { city: query.city } : {}),
             ...(query.type && Object.values(Type).includes(query.type as Type) ? { type: query.type as Type } : {}),
             ...(query.property && Object.values(Property).includes(query.property as Property) ? { property: query.property as Property } : {}),
             ...(query.bedroom && query.bedroom > 0 ? { bedroom: query.bedroom } : {}),
@@ -36,7 +37,9 @@ const getPosts = async(req:Request,res:Response)=>{
             }
             } : {}),
         };
+
         const posts = await prisma.post.findMany({ where });
+        console.log(posts)
         if(!posts){
             return res.status(500).json({message:"Can't fetch all the data"}) ;
         }
