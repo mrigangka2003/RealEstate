@@ -70,14 +70,32 @@ const getPost=async(req:Request,res:Response)=>{
                 }
             }
         })
-
+        
         if(!post){
             return res.status(500).json({message:"The post is not found"})
         }
 
+        const token = req.cookies?.token;
 
-        return res.status(200).json(post) ;
-
+        if (token) {
+            jwt.verify(token as string, jwtSecretKey as string, async (err, payload) => {
+            if (err) {
+                return res.status(401).json({ message: 'Invalid token' });
+            }
+    
+            const saved = await prisma.savedPost.findUnique({
+                where: {
+                    userId_postId: {
+                        postId: id,
+                        userId: (payload as jwt.JwtPayload).id,
+                    },
+                },
+            });
+                return res.status(200).json({ ...post, isSaved: saved ? true : false });
+            });
+        }else {
+            return res.status(200).json({ ...post, isSaved: false });
+        }
     } catch (error) {
         console.log(error) ;
         res.status(500).json({message:"Failed to get the post"}) ;
