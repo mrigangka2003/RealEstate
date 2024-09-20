@@ -2,7 +2,8 @@ import {Request ,Response } from "express" ;
 import prisma from "../../lib/prisma";
 import { uploadOnCloudinary } from "../helpers/cloudinary";
 import { Prisma, PrismaClient, Property ,Type } from "@prisma/client";
-
+import jwt from 'jsonwebtoken'
+import {jwtSecretKey} from '../config'
 
 interface paramsQueryInterface {
     city ?:string ,
@@ -177,10 +178,51 @@ const deletePost =async(req:Request,res:Response)=>{
     }
 }
 
+const savePost = async(req:Request,res:Response)=>{
+    const {postId} = req.body ;
+    const tokenUserId = (req as any).userId
+    try {
+        const savedPost = await prisma.savedPost.findUnique({
+            where:{
+                userId_postId:{
+                    userId: tokenUserId,
+                    postId
+                }
+            }
+        }) ;
+
+        if(savedPost){
+            await prisma.savedPost.delete({
+                where:{
+                    id: savedPost.id,
+                },
+            }) 
+            res.status(200).json({
+                message :"Post Removed from savelist"
+            })
+        }else{
+            await prisma.savedPost.create({
+                data:{
+                    userId : tokenUserId,
+                    postId 
+                }
+            })
+            res.status(200).json({
+                message :"Post Saved"
+            })
+        }
+    
+    } catch (error) {
+        console.log(error) ;
+        res.status(500).json({message :"Something went wrong while Saving the post"})
+    }
+}
+
 export{
     getPosts,
     getPost,
     createPost,
     updatePost,
-    deletePost
+    deletePost,
+    savePost
 }

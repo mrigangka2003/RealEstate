@@ -1,6 +1,6 @@
 import { register,login,logout } from "./auth.controller";
 import { getUsers,getUser,updateUser,deleteUser,updateAvatar } from "./user.controller";
-import {getPost ,getPosts , deletePost ,updatePost ,createPost} from './post.controller' ;
+import {getPost ,getPosts , deletePost ,updatePost ,createPost ,savePost} from './post.controller' ;
 export {
     register,
     login, 
@@ -16,5 +16,6 @@ export {
     getPosts,
     createPost,
     deletePost,
-    updatePost
+    updatePost,
+    savePost
 }
