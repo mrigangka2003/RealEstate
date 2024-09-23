@@ -1,5 +1,5 @@
 import { register,login,logout } from "./auth.controller";
-import { getUsers,getUser,updateUser,deleteUser,updateAvatar , savePost } from "./user.controller";
+import { getUsers,getUser,updateUser,deleteUser,updateAvatar , savePost ,profilePosts } from "./user.controller";
 import {getPost ,getPosts , deletePost ,updatePost ,createPost } from './post.controller' ;
 export {
     register,
@@ -12,6 +12,7 @@ export {
     deleteUser,
     updateAvatar,
     savePost,
+    profilePosts,
 
     getPost,
     getPosts,

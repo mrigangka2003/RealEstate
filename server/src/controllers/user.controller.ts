@@ -187,11 +187,43 @@ const savePost = async(req:Request,res:Response)=>{
     }
 }
 
+const profilePosts = async(req:Request ,res:Response)=>{
+    const tokenUserId = (req as any).userId ;
+    try {
+        const userPosts = await prisma.post.findMany({
+            where :{ userId : tokenUserId}
+        });
+
+        const saved = await prisma.savedPost.findMany({
+            where :{userId:tokenUserId},
+            include:{
+                post : true
+            }
+        }) ;
+
+        let savedPosts ;
+        if(saved){
+            savedPosts = saved.map((item)=> item.post);
+        }
+        res
+        .status(200)
+        .json({
+            userPosts,
+            savedPosts
+        });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({message:"FAILED TO GET THE PROFILE POST"}) ;
+    }
+}
+
 export {
     getUsers,
     getUser,
     updateUser,
     deleteUser,
     updateAvatar,
-    savePost
+    savePost,
+    profilePosts
 }
