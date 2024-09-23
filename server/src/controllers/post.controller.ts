@@ -25,7 +25,6 @@ const getPosts = async(req:Request,res:Response)=>{
             maxPrice: req.query.maxPrice ? parseInt(req.query.maxPrice as string, 10) : undefined,
         };
 
-        console.log("Query" ,query) ;
         const where: Prisma.PostWhereInput = {
             ...(query.city !== 'undefined' || '' ? { city: query.city } : {}),
             ...(query.type && Object.values(Type).includes(query.type as Type) ? { type: query.type as Type } : {}),
@@ -40,11 +39,9 @@ const getPosts = async(req:Request,res:Response)=>{
         };
 
         const posts = await prisma.post.findMany({ where });
-        console.log(posts)
         if(!posts){
             return res.status(500).json({message:"Can't fetch all the data"}) ;
         }
-        
         return res.status(200).json(posts);
     } catch (error) {
         console.log(error) ;
@@ -152,7 +149,6 @@ const createPost = async (req: Request, res: Response) => {
     if (!newPost) {
         throw new Error("Failed to create post");
     }
-    console.log(newPost) ;
     return res.status(200).json(newPost);
     } catch (error) {
         console.log((error as any).message);
@@ -196,45 +192,7 @@ const deletePost =async(req:Request,res:Response)=>{
     }
 }
 
-const savePost = async(req:Request,res:Response)=>{
-    const {postId} = req.body ;
-    const tokenUserId = (req as any).userId
-    try {
-        const savedPost = await prisma.savedPost.findUnique({
-            where:{
-                userId_postId:{
-                    userId: tokenUserId,
-                    postId
-                }
-            }
-        }) ;
 
-        if(savedPost){
-            await prisma.savedPost.delete({
-                where:{
-                    id: savedPost.id,
-                },
-            }) 
-            res.status(200).json({
-                message :"Post Removed from savelist"
-            })
-        }else{
-            await prisma.savedPost.create({
-                data:{
-                    userId : tokenUserId,
-                    postId 
-                }
-            })
-            res.status(200).json({
-                message :"Post Saved"
-            })
-        }
-    
-    } catch (error) {
-        console.log(error) ;
-        res.status(500).json({message :"Something went wrong while Saving the post"})
-    }
-}
 
 export{
     getPosts,
@@ -242,5 +200,5 @@ export{
     createPost,
     updatePost,
     deletePost,
-    savePost
+
 }

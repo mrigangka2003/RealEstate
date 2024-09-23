@@ -1,7 +1,7 @@
 import express from 'express' ;
 import { verifyToken } from '../middleware/verifyToken';
 import { upload } from '../middleware/multer';
-import { getPost,getPosts ,createPost,deletePost,updatePost,savePost } from '../controllers';
+import { getPost,getPosts ,createPost,deletePost,updatePost } from '../controllers';
 
 const router = express.Router() ;
 
@@ -17,6 +17,5 @@ router.post('/',verifyToken,
     ,createPost) ;
 router.put('/:id',verifyToken ,updatePost) ;
 router.delete('/:id',verifyToken ,deletePost) ;
-router.post('/save',verifyToken,savePost) ;
 
 export default router ;

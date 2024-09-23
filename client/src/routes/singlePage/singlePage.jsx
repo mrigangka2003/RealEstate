@@ -138,7 +138,8 @@ function SinglePage() {
               Send a Message
             </button>
             <button onClick={handleSave} style={{
-              backgroundColor : saved ? "black" : "white" 
+              backgroundColor : saved ? "black" : "white" ,
+              color :saved ? "white" : "black"
             }}>
               <img src="/save.png" alt="" />
               {saved ? "place saved" :"Saved the place"}
