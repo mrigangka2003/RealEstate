@@ -1,8 +1,24 @@
-import express,{Request ,Response ,NextFunction} from 'express' ;
+import 
+    express,
+    {
+        Request,
+        Response,
+        NextFunction
+    } 
+from 'express' ;
+
 import cors from 'cors'
 import cookieParser from 'cookie-parser';
 
-import { PostRoutes,AuthRoutes,TestRoutes,UserRoutes } from './routes';
+import { 
+    PostRoutes,
+    AuthRoutes,
+    TestRoutes,
+    UserRoutes,
+    chatRoutes,
+    messageRoutes 
+} from './routes';
+
 import { clientUrl } from './config';
 import { verifyToken } from './middleware/verifyToken';
 
@@ -22,13 +38,9 @@ app.use('/api/users',UserRoutes) ;
 app.use('/api/posts',PostRoutes) ;
 app.use('/api/auth',AuthRoutes) ;
 app.use('/api/test',verifyToken,TestRoutes) ;
+app.use('/api/chat',verifyToken,chatRoutes) ;
+app.use('/api/messages',verifyToken,messageRoutes) ;
 
 
-
-app.get('/',(req:Request,res:Response)=>{
-    res.send('hi') ;
-})
 
 export default app ;
-
-
