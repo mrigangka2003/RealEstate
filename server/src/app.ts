@@ -37,9 +37,9 @@ app.use(express.urlencoded({extended:true})) ;
 app.use('/api/users',UserRoutes) ;
 app.use('/api/posts',PostRoutes) ;
 app.use('/api/auth',AuthRoutes) ;
-app.use('/api/test',verifyToken,TestRoutes) ;
-app.use('/api/chat',verifyToken,chatRoutes) ;
-app.use('/api/messages',verifyToken,messageRoutes) ;
+app.use('/api/test',TestRoutes) ;
+app.use('/api/chat',chatRoutes) ;
+app.use('/api/messages',messageRoutes) ;
 
 
 

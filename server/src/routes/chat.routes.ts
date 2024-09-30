@@ -9,8 +9,8 @@ import {
 
 const router = express.Router() ;
 
-router.get('/' , verifyToken,getChats) ;
-router.get('/:id', verifyToken,getChat) ;
+router.get('/' ,verifyToken,getChats) ;
+router.get('/:id',verifyToken,getChat) ;
 router.post('/',verifyToken,addChat) ;
 router.post('/read/:id',verifyToken,readChat)
 

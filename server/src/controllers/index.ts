@@ -29,6 +29,10 @@ import {
     readChat
 } from "./chat.controller"
 
+import {
+    addMessage
+} from "../controllers/message.controller"
+
 export {
     register,
     login, 
@@ -51,5 +55,7 @@ export {
     getChats,
     getChat,
     addChat,
-    readChat
+    readChat,
+
+    addMessage
 }

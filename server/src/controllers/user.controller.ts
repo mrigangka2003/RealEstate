@@ -200,7 +200,6 @@ const profilePosts = async(req:Request ,res:Response)=>{
                 post : true
             }
         }) ;
-
         let savedPosts ;
         if(saved){
             savedPosts = saved.map((item)=> item.post);
