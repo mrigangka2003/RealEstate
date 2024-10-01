@@ -21,16 +21,51 @@ const getChats = async(req :Request , res:Response) =>{
 
 
 const getChat = async(req :Request , res:Response) =>{
+    const tokenUserId = (req as any).userId ;
     try {
-        
+        const chat = await prisma.chat.findUnique({
+            where : {
+                id : req.params.id,
+                userIds:{
+                    hasSome:[tokenUserId]
+                }
+            },
+            include :{
+                message:{
+                    orderBy:{
+                        createdAt :"asc"
+                    }
+                }
+            }
+        })
+
+        await prisma.chat.update({
+            where:{
+                id : req.params.id,
+            },
+            data:{
+                seenBy:{
+                    push:[tokenUserId]
+                }
+            }
+        })
+
+        return res.status(200).json(chat) ;
     } catch (error) {
         
     }
 }
 
 const addChat = async(req :Request , res:Response) =>{
+    const tokenUserId = (req as any).userId ;
     try {
-        
+        const newChat = await prisma.chat.create({
+            data:{
+                userIds : [tokenUserId , req.body.receiverId]
+            }
+        })
+
+        return res.status(200).json(newChat)
     } catch (error) {
         
     }
