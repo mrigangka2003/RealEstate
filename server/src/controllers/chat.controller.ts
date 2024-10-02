@@ -40,6 +40,7 @@ const getChats = async(req :Request , res:Response) =>{
 
 const getChat = async(req :Request , res:Response) =>{
     const tokenUserId = (req as any).userId ;
+
     try {
         const chat = await prisma.chat.findUnique({
             where : {
@@ -67,7 +68,6 @@ const getChat = async(req :Request , res:Response) =>{
                 }
             }
         })
-
         return res.status(200).json(chat) ;
     } catch (error) {
         console.log(error);
