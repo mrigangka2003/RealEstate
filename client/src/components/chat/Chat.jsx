@@ -2,18 +2,35 @@ import { useContext, useState } from "react";
 import "./chat.scss";
 import {AuthContext} from "../../contexts/AuthContext"
 import apiRequest from "../../lib/apiRequest";
+import { format } from "timeago.js";
 
 function Chat({ chats }) {
+
   const [chat, setChat] = useState(null);
   const {currentUser} = useContext(AuthContext) ;
 
-  const handleOpenChat =async(id , receiver)=>{
+  const handleOpenChat =async(id,receiver)=>{
     try {
-      const res = await apiRequest('/chats' , + id) ;
-      setChat(...res.data,receiver) ;
-
+      const res = await apiRequest(`/chats/${id}`) ;
+      setChat({...res.data,receiver}) ;
     } catch (error) {
       console.log(error) ;
+    }
+  }
+
+
+  const handleSubmit = async(e)=>{
+    e.preventDefault() ;
+    const formData = new FormData(e.target) ;
+    const text = formData.get("text") ;
+
+    if(!text) return ;
+    try {
+      const res = await apiRequest.post(`/messages/${chat.id}` , {text}) ;
+      setChat((prev)=>({...prev, message:[...prev.message , res.data]})) ;
+      e.target.reset() ;
+    } catch (error) {
+      console.log("error", error) ;
     }
   }
 
@@ -27,7 +44,7 @@ function Chat({ chats }) {
           key={c.id} 
           style={{backgroundColor : c.seenBy.includes(currentUser.id) ? "white " :"#fecd514e" 
           }}
-          onClick={()=>handleOpenChat(c.id , c.receiver)}
+          onClick={() => handleOpenChat(c.id, c.receiver)}
           >
             <img
               src={c.receiver.avatar || "/NoAvatar.jpg"}
@@ -53,19 +70,28 @@ function Chat({ chats }) {
             </span>
           </div>
           <div className="center">
-            {
-              chat.messages.map((message)=>(
-              <div className="chatMessage own" key={message.id}>
+          {chat.message.map((message) => (
+              <div
+                className="chatMessage"
+                style={{
+                  alignSelf:
+                    message.userId === currentUser.id
+                      ? "flex-end"
+                      : "flex-start",
+                  textAlign:
+                    message.userId === currentUser.id ? "right" : "left",
+                }}
+                key={message.id}
+              >
                 <p>{message.text}</p>
                 <span>{format(message.createdAt)}</span>
               </div>
-              ))
-            }
+            ))}
           </div>
-          <div className="bottom">
-            <textarea></textarea>
+          <form onSubmit={handleSubmit} className="bottom">
+            <textarea name="text"></textarea>
             <button>Send</button>
-          </div>
+          </form>
         </div>
       )}
     </div>
