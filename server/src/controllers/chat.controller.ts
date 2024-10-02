@@ -12,10 +12,28 @@ const getChats = async(req :Request , res:Response) =>{
             }
         })
 
+        for(const chat of chats){
+            const receiverId = chat.userIds.find((id)=>id !== tokenUserId) ;
+
+            const receiver = await prisma.user.findUnique({
+                where : {
+                    id : receiverId 
+                },
+                select :{
+                    id : true ,
+                    username : true , 
+                    avatar : true 
+                }
+            })
+            if (receiver) {
+                (chat as any).receiver = receiver;
+            }
+        }
+
         res.status(200).json(chats) ;
     } catch (error) {
         console.log(error) ;
-        res.status(403).json({message:"something went wrong"})
+        res.status(403).json({message:"something went wrong while getting all chats for you"})
     }
 }
 
@@ -52,7 +70,8 @@ const getChat = async(req :Request , res:Response) =>{
 
         return res.status(200).json(chat) ;
     } catch (error) {
-        
+        console.log(error);
+        res.status(500).json({ message: "Failed to get chat!" });
     }
 }
 
@@ -67,16 +86,32 @@ const addChat = async(req :Request , res:Response) =>{
 
         return res.status(200).json(newChat)
     } catch (error) {
-        
+        console.log(error);
+        res.status(500).json({ message: "Failed to add chat!" });
     }
 }
 
 
 const readChat = async(req :Request , res:Response) =>{
+    const tokenUserId = (req as any).userId ;
     try {
-        
+        const chat  = await prisma.chat.update({
+            where: {
+                id : req.params.id,
+                userIds:{
+                    hasSome:[tokenUserId]
+                }
+            },
+            data:{
+                seenBy :{
+                    set:[tokenUserId]
+                }
+            }
+        })
+        res.status(200).json(chat);
     } catch (error) {
-        
+        console.log(error);
+        res.status(500).json({ message: "Failed to read chat!" });
     }
 }
 
