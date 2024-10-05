@@ -11,7 +11,8 @@ import {
     deleteUser,
     updateAvatar,
     savePost,
-    profilePosts 
+    profilePosts,
+    getNotificationNumber
 } from "./user.controller";
 
 import {
@@ -45,6 +46,7 @@ export {
     updateAvatar,
     savePost,
     profilePosts,
+    getNotificationNumber,
 
     getPost,
     getPosts,

@@ -25,25 +25,25 @@ function App() {
       element: <Layout />,
       children:[
         {
-          path:"/",
+          path:"",
           element:<HomePage/>
         },
         {
-          path:"/list",
+          path:"list",
           element:<ListPage/>,
           loader:listPageLoader
         },
         {
-          path:"/:id",
+          path:":id",
           element:<SinglePage/>,
           loader:singlePageLoader
         },
         {
-          path:"/login",
+          path:"login",
           element:<Login/>
         },
         {
-          path:"/register",
+          path:"register",
           element:<Register/>
         }
       ]
@@ -53,15 +53,15 @@ function App() {
       element:<RequireAuth/>,
       children:[
         {
-          path:"/profile",
+          path:"profile",
           element:<ProfilePage/>,
           loader:profilePageLoader
         },
         {
-          path:"/profile/update",
+          path:"profile/update",
           element:<ProfileUpdatePage/>
         },{
-          path:"/add" ,
+          path:"add" ,
           element:<NewPostPage/>
         }
       ]
