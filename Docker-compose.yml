@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  # Socket.IO server
+  socket-server:
+    build:
+      context: ./socket  # The folder where your Dockerfile for the Socket.IO server is located
+    container_name: socket-server
+    ports:
+      - "4000:4000"  # Expose port 4000 for the Socket.IO server
+    environment:
+      MONGO_URI: MONGO_URI  # Replace with your MongoDB Atlas connection string
+
+  # React client
+  react-client:
+    build:
+      context: ./client  # The folder where your Dockerfile for the React client is located
+    container_name: react-client
+    ports:
+      - "5173:5173"  # Expose port 5173 for the React client
+    depends_on:
+      - socket-server  # Ensure the socket server is running before starting the React client
